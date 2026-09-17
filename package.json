@@ -1,6 +1,6 @@
 {
 	"name": "dsh-ui-cost-meter",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "DeepSeek Harness Web GUI plugin: real-time spend for the current session, priced from per-model token rates and shown as a pill under the composer",
 	"homepage": "https://github.com/yuu1111/dsh-ui-cost-meter#readme",
 	"bugs": {
