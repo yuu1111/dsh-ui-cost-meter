@@ -31,9 +31,10 @@ editing `cordis.patch.yml`.
 
 Every field lives on the plugin row, and every price is per **one million
 tokens** in whatever currency `symbol` names. The example below prices DeepSeek
-V4.1 Flash (`deepseek-flash`; OpenCode Go's own id is `deepseek-v4.1-flash`)
-and DeepSeek V4 Pro at DeepSeek's published off-peak rates, which the official
-API and OpenCode Go both charge. Replace them with the rates you actually pay.
+V4.1 Flash (`deepseek-flash`; OpenCode Go's own id is `deepseek-v4.1-flash`,
+and Command Code's is `deepseek/deepseek-v4.1-flash`) and DeepSeek V4 Pro at
+DeepSeek's published off-peak rates, which the official API, OpenCode Go, and
+Command Code all charge. Replace them with the rates you actually pay.
 
 ```yaml
 - id: cost-meter
@@ -61,6 +62,11 @@ API and OpenCode Go both charge. Replace them with the rates you actually pay.
         output: 1.98
         cacheRead: 0.022
         cacheWrite: 0
+      command-code/deepseek/deepseek-v4.1-flash:
+        input: 0.15
+        output: 0.6
+        cacheRead: 0.003
+        cacheWrite: 0
 ```
 
 One rate per route can only carry the off-peak number, so that is what the
@@ -69,10 +75,12 @@ example shows: peak is exactly double in every field and covers 01:00-04:00 and
 `cacheWrite` stays `0`, and the retired `deepseek-v4-flash` and
 `deepseek-v4-flash-vision-exp` ids now route to V4.1 Flash at the Flash price.
 OpenCode Go is a $10/month plan, so its rates meter usage against the plan's
-limits rather than pricing a per-token invoice.
+limits rather than pricing a per-token invoice. Command Code lists the same
+rates on its Go plan and above.
 
 Sources: [DeepSeek Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing),
-[OpenCode Go](https://opencode.ai/docs/go/).
+[OpenCode Go](https://opencode.ai/docs/go/),
+[Command Code: DeepSeek V4.1 Flash](https://commandcode.ai/models/deepseek-v4-1-flash).
 
 | Field | Meaning |
 |---|---|

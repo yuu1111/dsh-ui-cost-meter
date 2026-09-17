@@ -14,13 +14,17 @@
 #             nothing by default, which keeps a wrong rate from looking right.
 #
 # The values below are DeepSeek's published off-peak rates in USD per 1M
-# tokens, which the official API and OpenCode Go both charge. Off-peak is half
-# of peak, and peak runs 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday.
-# Checked 2026-09-14 against:
+# tokens, which the official API, OpenCode Go, and Command Code all charge.
+# Off-peak is half of peak, and peak runs 01:00-04:00 and 06:00-10:00 UTC,
+# Monday through Friday.
+# DeepSeek and OpenCode Go checked 2026-09-14 against:
 #   https://api-docs.deepseek.com/quick_start/pricing
 #   https://opencode.ai/docs/go/
+# Command Code checked 2026-09-17 against:
+#   https://commandcode.ai/models/deepseek-v4-1-flash
 # OpenCode Go is a $10/month plan that meters these rates against usage limits
-# rather than billing per token. Replace them with the rates you actually pay.
+# rather than billing per token, and Command Code publishes the same rates for
+# its Go plan and above. Replace them with the rates you actually pay.
 - insert:
     - id: cost-meter
       name: dsh-ui-cost-meter
@@ -46,4 +50,9 @@
             input: 0.66
             output: 1.98
             cacheRead: 0.022
+            cacheWrite: 0
+          command-code/deepseek/deepseek-v4.1-flash:
+            input: 0.15
+            output: 0.6
+            cacheRead: 0.003
             cacheWrite: 0

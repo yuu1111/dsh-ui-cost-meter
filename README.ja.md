@@ -27,9 +27,10 @@ dsh plugin --profile web add dsh-ui-cost-meter
 
 設定はすべてプラグインの行に置きます 単価はすべて **100万トークンあたり** で 通貨は
 `symbol` が示すものに揃えてください 下の例は DeepSeek V4.1 Flash（`deepseek-flash`
-OpenCode Go 側の id は `deepseek-v4.1-flash`）と DeepSeek V4 Pro を DeepSeek の
-公示単価（オフピーク）で値付けします 公式 API と OpenCode Go は同じ数字を請求します
-実際に払う額に合わせて書き換えてください
+OpenCode Go 側の id は `deepseek-v4.1-flash` Command Code 側は
+`deepseek/deepseek-v4.1-flash`）と DeepSeek V4 Pro を DeepSeek の公示単価
+（オフピーク）で値付けします 公式 API と OpenCode Go と Command Code は同じ数字を
+請求します 実際に払う額に合わせて書き換えてください
 
 ```yaml
 - id: cost-meter
@@ -57,6 +58,11 @@ OpenCode Go 側の id は `deepseek-v4.1-flash`）と DeepSeek V4 Pro を DeepSe
         output: 1.98
         cacheRead: 0.022
         cacheWrite: 0
+      command-code/deepseek/deepseek-v4.1-flash:
+        input: 0.15
+        output: 0.6
+        cacheRead: 0.003
+        cacheWrite: 0
 ```
 
 route ごとに1つしか置けないためここではオフピークを示します ピークはどの欄もちょうど
@@ -64,10 +70,12 @@ route ごとに1つしか置けないためここではオフピークを示し�
 キャッシュ書きを課金しないため `cacheWrite` は `0` のままです 廃止された
 `deepseek-v4-flash` と `deepseek-v4-flash-vision-exp` の id は現在 V4.1 Flash へ
 回され Flash の単価で課金されます OpenCode Go は月10ドルの定額プランで この単価は
-トークンの請求額ではなく プランの使用上限に対する計量に使われます
+トークンの請求額ではなく プランの使用上限に対する計量に使われます Command Code も
+同じ単価を Go プラン以上で示しています
 
 出典: [DeepSeek Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing)
 [OpenCode Go](https://opencode.ai/docs/go/)
+[Command Code: DeepSeek V4.1 Flash](https://commandcode.ai/models/deepseek-v4-1-flash)
 
 | フィールド | 意味 |
 |---|---|
