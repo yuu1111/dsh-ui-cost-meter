@@ -44,8 +44,8 @@
 `resolveRates` は `"<provider>/<model>"`、`"<model>"`、`fallback` の順に見る
 `fallback` は素の object schema を置くと schemastery が省略時にも0埋めの単価を生やし 未設定トークンが黙って0円になるため `FallbackSchema` で包み 省略時は `undefined` を保つ
 どのキーにも一致しない route は推測せず、そのトークンを `unpricedTokens` として数え、合計へ入れず、ピルの金額へ末尾の `+` を付ける
-状態は耐久キャッシュへ載るため plain JSON に保ち（`stateVersion: 1`）、見た目が変わらない遷移では同じ `wire` の参照を持ち回る
-保存する形を変えるときは `stateVersion` と対応する zod スキーマを同時に上げる
+状態は耐久キャッシュへ載るため plain JSON に保ち（`stateVersion: 2`）、見た目が変わらない遷移では同じ `wire` の参照を持ち回る
+状態の形か畳み方の意味が変わるときは `stateVersion` を上げ、形を変えたときは対応する zod スキーマも同時に上げる
 
 ## Coding Style & Naming Conventions
 

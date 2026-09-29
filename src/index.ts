@@ -411,7 +411,7 @@ export function costMeterProjection(
 ): CostMeterDefinition {
 	return {
 		key: PROJECTION_KEY,
-		stateVersion: 1,
+		stateVersion: 2,
 		stateSchema,
 		init: () => ({
 			parts: ZERO_PARTS,
