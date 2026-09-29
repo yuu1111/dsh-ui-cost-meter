@@ -13,18 +13,27 @@
 #   fallback: unit prices for every route no key matches. Omit it to price
 #             nothing by default, which keeps a wrong rate from looking right.
 #
-# The values below are DeepSeek's published off-peak rates in USD per 1M
-# tokens, which the official API, OpenCode Go, and Command Code all charge.
-# Off-peak is half of peak, and peak runs 01:00-04:00 and 06:00-10:00 UTC,
-# Monday through Friday.
+# The values below are each provider's own published numbers in USD per 1M
+# tokens. DeepSeek's official API and OpenCode Go charge DeepSeek's list
+# price, which is half off-peak. Command Code prices every model on its own
+# page, so its rows carry Command Code's numbers instead: V4.1 Flash and
+# V4 Flash are half off-peak too, V4 Flash Fast is billed flat, and V4.1
+# Flash Fast's cache read is the one field its peak does not double.
+# Peak runs 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday, so it
+# is never charged at the weekend.
 # DeepSeek and OpenCode Go checked 2026-09-14 against:
 #   https://api-docs.deepseek.com/quick_start/pricing
 #   https://opencode.ai/docs/go/
-# Command Code checked 2026-09-17 against:
-#   https://commandcode.ai/models/deepseek-v4-1-flash
-# OpenCode Go is a $10/month plan that meters these rates against usage limits
-# rather than billing per token, and Command Code publishes the same rates for
-# its Go plan and above. Replace them with the rates you actually pay.
+# Command Code checked 2026-09-29 against:
+#   https://commandcode.ai/models/deepseek-v4-1-flash-fast
+#   https://commandcode.ai/models/deepseek-v4-flash-fast
+#   https://commandcode.ai/models/deepseek-v4-flash
+#   https://commandcode.ai/pricing
+# OpenCode Go's $10/month plan meters these rates against usage limits rather
+# than billing per token. Command Code's $10/month GOAT plan grants $60 of
+# DeepSeek V4.1 Flash credits a month, which V4.1 Flash Fast draws on as
+# well, so those rows read as credits burned instead of a per-token invoice.
+# Replace them with the rates you actually pay.
 - insert:
     - id: cost-meter
       name: dsh-ui-cost-meter
@@ -55,4 +64,19 @@
             input: 0.15
             output: 0.6
             cacheRead: 0.003
+            cacheWrite: 0
+          command-code/deepseek/deepseek-v4-flash:
+            input: 0.15
+            output: 0.6
+            cacheRead: 0.003
+            cacheWrite: 0
+          command-code/deepseek/deepseek-v4.1-flash-fast:
+            input: 0.16
+            output: 0.58
+            cacheRead: 0.02
+            cacheWrite: 0
+          command-code/deepseek/deepseek-v4-flash-fast:
+            input: 0.28
+            output: 0.56
+            cacheRead: 0.07
             cacheWrite: 0

@@ -30,11 +30,12 @@ editing `cordis.patch.yml`.
 ## Configure
 
 Every field lives on the plugin row, and every price is per **one million
-tokens** in whatever currency `symbol` names. The example below prices DeepSeek
-V4.1 Flash (`deepseek-flash`; OpenCode Go's own id is `deepseek-v4.1-flash`,
-and Command Code's is `deepseek/deepseek-v4.1-flash`) and DeepSeek V4 Pro at
-DeepSeek's published off-peak rates, which the official API, OpenCode Go, and
-Command Code all charge. Replace them with the rates you actually pay.
+tokens** in whatever currency `symbol` names. The example below prices the
+Command Code DeepSeek Flash routes — `deepseek/deepseek-v4-flash` and
+`deepseek/deepseek-v4.1-flash` share the V4.1 Flash price, and
+`deepseek/deepseek-v4-flash-fast` and `deepseek/deepseek-v4.1-flash-fast`
+each carry what their own model page publishes — and DeepSeek V4 Pro at
+DeepSeek's off-peak list price. Replace them with the rates you actually pay.
 
 ```yaml
 - id: cost-meter
@@ -67,20 +68,43 @@ Command Code all charge. Replace them with the rates you actually pay.
         output: 0.6
         cacheRead: 0.003
         cacheWrite: 0
+      command-code/deepseek/deepseek-v4-flash:
+        input: 0.15
+        output: 0.6
+        cacheRead: 0.003
+        cacheWrite: 0
+      command-code/deepseek/deepseek-v4.1-flash-fast:
+        input: 0.16
+        output: 0.58
+        cacheRead: 0.02
+        cacheWrite: 0
+      command-code/deepseek/deepseek-v4-flash-fast:
+        input: 0.28
+        output: 0.56
+        cacheRead: 0.07
+        cacheWrite: 0
 ```
 
-One rate per route can only carry the off-peak number, so that is what the
-example shows: peak is exactly double in every field and covers 01:00-04:00 and
-06:00-10:00 UTC, Monday through Friday. DeepSeek bills no cache writes, so
-`cacheWrite` stays `0`, and the retired `deepseek-v4-flash` and
-`deepseek-v4-flash-vision-exp` ids now route to V4.1 Flash at the Flash price.
-OpenCode Go is a $10/month plan, so its rates meter usage against the plan's
-limits rather than pricing a per-token invoice. Command Code lists the same
-rates on its Go plan and above.
+One rate per route can only carry one number, so that is what the example
+shows: the off-peak price. Peak is exactly double for DeepSeek's list price
+and for Command Code's V4.1 Flash and V4 Flash, and covers 01:00-04:00 and
+06:00-10:00 UTC, Monday through Friday; Command Code bills V4 Flash Fast flat,
+and doubles everything on V4.1 Flash Fast except the cache read. No provider
+here bills a cache write, so `cacheWrite` stays `0`. Command Code also
+bills the `deepseek-v4-flash-vision-exp` id at the Flash price.
+
+Command Code's GOAT plan is not a per-token invoice for these models either:
+the $10/month plan grants **$60** of DeepSeek V4.1 Flash usage credits a
+month, and V4.1 Flash Fast draws on the same allowance, so the pill these
+rates produce reads as credits burned rather than an amount owed. OpenCode
+Go's $10/month plan likewise meters its rates against the plan's limits.
 
 Sources: [DeepSeek Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing),
 [OpenCode Go](https://opencode.ai/docs/go/),
-[Command Code: DeepSeek V4.1 Flash](https://commandcode.ai/models/deepseek-v4-1-flash).
+[Command Code pricing](https://commandcode.ai/pricing),
+[DeepSeek V4.1 Flash Fast](https://commandcode.ai/models/deepseek-v4-1-flash-fast),
+[DeepSeek V4 Flash Fast](https://commandcode.ai/models/deepseek-v4-flash-fast),
+[the V4.1 Flash Fast announcement](https://x.com/CommandCodeAI/status/2104965700406350028).
 
 | Field | Meaning |
 |---|---|

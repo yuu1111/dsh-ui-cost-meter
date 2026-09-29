@@ -26,11 +26,12 @@ dsh plugin --profile web add dsh-ui-cost-meter
 ## 設定
 
 設定はすべてプラグインの行に置きます 単価はすべて **100万トークンあたり** で 通貨は
-`symbol` が示すものに揃えてください 下の例は DeepSeek V4.1 Flash（`deepseek-flash`
-OpenCode Go 側の id は `deepseek-v4.1-flash` Command Code 側は
-`deepseek/deepseek-v4.1-flash`）と DeepSeek V4 Pro を DeepSeek の公示単価
-（オフピーク）で値付けします 公式 API と OpenCode Go と Command Code は同じ数字を
-請求します 実際に払う額に合わせて書き換えてください
+`symbol` が示すものに揃えてください 下の例は Command Code の DeepSeek Flash 系の
+route を値付けします `deepseek/deepseek-v4-flash` と
+`deepseek/deepseek-v4.1-flash` は V4.1 Flash の単価を共有し
+`deepseek/deepseek-v4-flash-fast` と `deepseek/deepseek-v4.1-flash-fast` は
+それぞれのモデルページが示す単価を持ちます DeepSeek V4 Pro は DeepSeek の公示単価
+（オフピーク）です 実際に払う額に合わせて書き換えてください
 
 ```yaml
 - id: cost-meter
@@ -63,19 +64,40 @@ OpenCode Go 側の id は `deepseek-v4.1-flash` Command Code 側は
         output: 0.6
         cacheRead: 0.003
         cacheWrite: 0
+      command-code/deepseek/deepseek-v4-flash:
+        input: 0.15
+        output: 0.6
+        cacheRead: 0.003
+        cacheWrite: 0
+      command-code/deepseek/deepseek-v4.1-flash-fast:
+        input: 0.16
+        output: 0.58
+        cacheRead: 0.02
+        cacheWrite: 0
+      command-code/deepseek/deepseek-v4-flash-fast:
+        input: 0.28
+        output: 0.56
+        cacheRead: 0.07
+        cacheWrite: 0
 ```
 
-route ごとに1つしか置けないためここではオフピークを示します ピークはどの欄もちょうど
-倍で 月曜から金曜の 01:00-04:00 UTC と 06:00-10:00 UTC にあたります DeepSeek は
-キャッシュ書きを課金しないため `cacheWrite` は `0` のままです 廃止された
-`deepseek-v4-flash` と `deepseek-v4-flash-vision-exp` の id は現在 V4.1 Flash へ
-回され Flash の単価で課金されます OpenCode Go は月10ドルの定額プランで この単価は
-トークンの請求額ではなく プランの使用上限に対する計量に使われます Command Code も
-同じ単価を Go プラン以上で示しています
+route ごとに1つしか置けないためここではオフピークを示します ピークは DeepSeek の
+公示単価と Command Code の V4.1 Flash・V4 Flash ではちょうど倍で 月曜から金曜の
+01:00-04:00 UTC と 06:00-10:00 UTC にあたります Command Code の V4 Flash Fast は
+終日同じ単価で V4.1 Flash Fast はキャッシュ読みだけが倍になりません ここではどの
+provider もキャッシュ書きを課金しないため `cacheWrite` は `0` のままです
+`deepseek-v4-flash-vision-exp` も Flash の単価で課金されます
+
+Command Code の GOAT プランはこれらのモデルをトークン単位では請求しません 月10ドルの
+プランに DeepSeek V4.1 Flash の **60ドル** ぶんの月次クレジットが付き V4.1 Flash
+Fast も同じ枠を使います そのためこの単価が作るピルは請求額ではなくクレジットの消費を
+示します OpenCode Go も同じく月10ドルのプランの使用上限に対する計量です
 
 出典: [DeepSeek Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing)
 [OpenCode Go](https://opencode.ai/docs/go/)
-[Command Code: DeepSeek V4.1 Flash](https://commandcode.ai/models/deepseek-v4-1-flash)
+[Command Code: Pricing](https://commandcode.ai/pricing)
+[Command Code: DeepSeek V4.1 Flash Fast](https://commandcode.ai/models/deepseek-v4-1-flash-fast)
+[Command Code: DeepSeek V4 Flash Fast](https://commandcode.ai/models/deepseek-v4-flash-fast)
 
 | フィールド | 意味 |
 |---|---|
