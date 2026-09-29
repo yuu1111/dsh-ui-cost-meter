@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, test } from "bun:test";
-import { type CostMeterState, costMeterProjection } from "../src/index";
+import { Config, type CostMeterState, costMeterProjection } from "../src/index";
 import {
 	breakdownRows,
 	type CostMeterView,
@@ -55,6 +55,24 @@ function fold(events: readonly unknown[]): CostMeterView {
 	for (const event of events) state = definition.apply(state, event as never);
 	return definition.wire.view(state);
 }
+
+describe("Config", () => {
+	test("fallback を省略すると値付けしない", () => {
+		const config = Config({ symbol: "$", rates: {} });
+		expect(config.fallback).toBeUndefined();
+		expect(resolveRates(config, "other", "unknown")).toBeUndefined();
+	});
+
+	test("fallback は省略した欄を0で埋める", () => {
+		const config = Config({ rates: {}, fallback: { input: 1 } });
+		expect(config.fallback).toEqual({
+			input: 1,
+			output: 0,
+			cacheRead: 0,
+			cacheWrite: 0,
+		});
+	});
+});
 
 describe("resolveRates", () => {
 	test("route の key が model だけの key に勝つ", () => {

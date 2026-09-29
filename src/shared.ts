@@ -57,8 +57,12 @@ export interface CostSettings {
 	readonly symbol: string;
 	/** `"<provider>/<model>"` か `"<model>"` を key にした単価表 */
 	readonly rates: Readonly<Record<string, Rates>>;
-	/** どの key にも一致しない route に使う単価 省略時は値付けしない */
-	readonly fallback?: Rates;
+	/**
+	 * どの key にも一致しない route に使う単価 省略時は値付けしない
+	 *
+	 * 解決済みの設定は key ごと欠けるため 明示的な `undefined` も省略と同じに扱う
+	 */
+	readonly fallback?: Rates | undefined;
 }
 
 /**

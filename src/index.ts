@@ -51,12 +51,21 @@ const RatesSchema = z.object({
 });
 
 /**
+ * 一致する route が無いときに使う単価
+ *
+ * 素の `RatesSchema` を置くと schemastery が省略時にも0埋めの単価を生やすため
+ * 未設定トークンが黙って0円になる 省略時は `undefined` のまま残し
+ * `resolveRates` が未設定として数えられるようにする
+ */
+const FallbackSchema = z.union([RatesSchema, z.const(undefined)]);
+
+/**
  * 行の `config` が取る形
  */
 export const Config = z.object({
 	symbol: z.string().default("$"),
 	rates: z.dict(RatesSchema).default({}),
-	fallback: RatesSchema,
+	fallback: FallbackSchema,
 });
 
 /**
@@ -65,7 +74,7 @@ export const Config = z.object({
 export type CostConfig = {
 	symbol: string;
 	rates: Record<string, Rates>;
-	fallback?: Rates;
+	fallback?: Rates | undefined;
 };
 
 /**
