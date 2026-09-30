@@ -167,6 +167,23 @@ describe("client bundle", () => {
 		expect(captured[0]?.options.order).toBe(10);
 	});
 
+	test("パネルは組み込みの統計ダイアログと同じ面と組で持つ", () => {
+		const loaded = loadBundle();
+		const captured: CapturedRegistration[] = [];
+		(loaded.exports.apply as (ctx: unknown) => void)(fakeContext(captured));
+		const css =
+			styleTags.find((tag) => tag.id === "dsh-ui-cost-meter/style.css")
+				?.textContent ?? "";
+
+		// 組み込みの統計ピルのダイアログと同じ面 影 角丸を使う
+		expect(css).toContain("background:var(--dsw-specific-menu)");
+		expect(css).toContain("box-shadow:var(--dsw-elevation-prominent)");
+		expect(css).toContain("border-radius:var(--dsw-radius-lg)");
+
+		// 面は不透明ではないため 背後をぼかす組の宣言を必ず添える
+		expect(css).toContain("backdrop-filter:var(--dsw-menu-backdrop-filter)");
+	});
+
 	test("金額があればピルを描く", () => {
 		const loaded = loadBundle();
 		const captured: CapturedRegistration[] = [];

@@ -85,6 +85,10 @@ const MEASURE_STYLE: CSSProperties = {
  * シェルの統計ピルと内訳ダイアログの CSS Modules は外から読めないため 同じ
  * トークンと同じ宣言を自前の class で持つ 統計ピルの行が無いときだけ 行の
  * 組み方も同じ値で自前に行を描く
+ *
+ * `--dsw-specific-menu` は不透明ではなく `#303136f0` のような薄い面なので
+ * `--dsw-menu-backdrop-filter` と必ず組で使う これが無いと背後がぼけず
+ * 透けた本文がそのまま読めてしまう 角丸も組み込みの面と同じ `--dsw-radius-lg` を使う
  */
 const STYLE = `
 .dsh-ui-cost-meter{max-width:var(--dsh-chat-content-width);box-sizing:border-box;width:100%;padding:4px calc(var(--dsh-composer-side-clearance) + 16px) 0px;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));justify-content:center;gap:12px;margin:0 auto;display:flex}
@@ -95,7 +99,7 @@ button.dsh-ui-cost-meter-pill{cursor:pointer}
 button.dsh-ui-cost-meter-pill:hover,button.dsh-ui-cost-meter-pill[aria-expanded=true]{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}
 .dsh-ui-cost-meter-label{text-overflow:ellipsis;min-width:0;overflow:hidden}
 .dsh-ui-cost-meter-unpriced{margin-left:1px;font-size:11px}
-.dsh-ui-cost-meter-panel{z-index:1100;box-sizing:border-box;background:var(--dsw-specific-menu);--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);width:max-content;min-width:min(300px,100vw - 24px);max-width:min(440px,100vw - 24px);box-shadow:var(--dsw-elevation-prominent);color:var(--dsw-alias-label-secondary);cursor:default;border:0;border-radius:12px;padding:16px;font-size:12px;line-height:18px;position:fixed}
+.dsh-ui-cost-meter-panel{z-index:1100;box-sizing:border-box;background:var(--dsw-specific-menu);backdrop-filter:var(--dsw-menu-backdrop-filter);--dsw-elevation-stroke-color:var(--dsw-alias-border-l1);width:max-content;min-width:min(300px,100vw - 24px);max-width:min(440px,100vw - 24px);box-shadow:var(--dsw-elevation-prominent);color:var(--dsw-alias-label-secondary);cursor:default;border:0;border-radius:var(--dsw-radius-lg);padding:16px;font-size:12px;line-height:18px;position:fixed}
 .dsh-ui-cost-meter-title{color:var(--dsw-alias-label-primary);justify-content:space-between;gap:16px;margin-bottom:8px;font-weight:500;display:flex}
 .dsh-ui-cost-meter-titleRule{border-top:.5px solid var(--dsw-alias-border-l2);margin-bottom:10px}
 .dsh-ui-cost-meter-titleValue{font-variant-numeric:tabular-nums}
