@@ -30,12 +30,20 @@ editing `cordis.patch.yml`.
 ## Configure
 
 Every field lives on the plugin row, and every price is per **one million
-tokens** in whatever currency `symbol` names. The example below prices the
-Command Code DeepSeek Flash routes — `deepseek/deepseek-v4-flash` and
-`deepseek/deepseek-v4.1-flash` share the V4.1 Flash price, and
-`deepseek/deepseek-v4-flash-fast` and `deepseek/deepseek-v4.1-flash-fast`
-each carry what their own model page publishes — and DeepSeek V4 Pro at
-DeepSeek's off-peak list price. Replace them with the rates you actually pay.
+tokens** in whatever currency `symbol` names.
+
+**No configuration is needed.** The plugin ships a rate table for every model
+OpenCode Go, OpenCode Zen, and Command Code served when it was generated:
+
+| Provider | Routes | Where the numbers come from |
+|---|---|---|
+| `opencode-go` | 36 | [models.dev](https://models.dev/api.json), kept only for the ids `https://opencode.ai/zen/go/v1/models` actually serves |
+| `opencode` | 85 | the same, against `https://opencode.ai/zen/v1/models` |
+| `command-code` | 87 | `https://api.commandcode.ai/provider/v1/models` for the ids, each model's page under `https://commandcode.ai/models/` for Input, Output, and Cache read |
+
+Write `rates` only for the routes where the shipped number is wrong for you —
+a peak-hour price, a different plan, a provider the table has never heard of.
+Your key replaces the shipped one for that route:
 
 ```yaml
 - id: cost-meter
@@ -43,74 +51,43 @@ DeepSeek's off-peak list price. Replace them with the rates you actually pay.
   config:
     symbol: '$'
     rates:
-      opencode-go/deepseek-flash:
-        input: 0.15
-        output: 0.6
-        cacheRead: 0.003
-        cacheWrite: 0
-      opencode-go/deepseek-v4-pro:
-        input: 0.66
-        output: 1.98
-        cacheRead: 0.022
-        cacheWrite: 0
       deepseek-official/deepseek-flash:
         input: 0.15
         output: 0.6
         cacheRead: 0.003
         cacheWrite: 0
-      deepseek-official/deepseek-v4-pro:
-        input: 0.66
-        output: 1.98
-        cacheRead: 0.022
-        cacheWrite: 0
-      command-code/deepseek/deepseek-v4.1-flash:
-        input: 0.15
-        output: 0.6
-        cacheRead: 0.003
-        cacheWrite: 0
-      command-code/deepseek/deepseek-v4-flash:
-        input: 0.15
-        output: 0.6
-        cacheRead: 0.003
-        cacheWrite: 0
-      command-code/deepseek/deepseek-v4.1-flash-fast:
-        input: 0.16
-        output: 0.58
-        cacheRead: 0.02
-        cacheWrite: 0
-      command-code/deepseek/deepseek-v4-flash-fast:
-        input: 0.28
-        output: 0.56
-        cacheRead: 0.07
-        cacheWrite: 0
 ```
-
-One rate per route can only carry one number, so that is what the example
-shows: the off-peak price. Peak is exactly double for DeepSeek's list price
-and for Command Code's V4.1 Flash and V4 Flash, and covers 01:00-04:00 and
-06:00-10:00 UTC, Monday through Friday; Command Code bills V4 Flash Fast flat,
-and doubles everything on V4.1 Flash Fast except the cache read. No provider
-here bills a cache write, so `cacheWrite` stays `0`. Command Code also
-bills the `deepseek-v4-flash-vision-exp` id at the Flash price.
-
-Command Code's GOAT plan is not a per-token invoice for these models either:
-the $10/month plan grants **$60** of DeepSeek V4.1 Flash usage credits a
-month, and V4.1 Flash Fast draws on the same allowance, so the pill these
-rates produce reads as credits burned rather than an amount owed. OpenCode
-Go's $10/month plan likewise meters its rates against the plan's limits.
-
-Sources: [DeepSeek Models & Pricing](https://api-docs.deepseek.com/quick_start/pricing),
-[OpenCode Go](https://opencode.ai/docs/go/),
-[Command Code pricing](https://commandcode.ai/pricing),
-[DeepSeek V4.1 Flash Fast](https://commandcode.ai/models/deepseek-v4-1-flash-fast),
-[DeepSeek V4 Flash Fast](https://commandcode.ai/models/deepseek-v4-flash-fast),
-[the V4.1 Flash Fast announcement](https://x.com/CommandCodeAI/status/2104965700406350028).
 
 | Field | Meaning |
 |---|---|
 | `symbol` | Prefixed to every amount. Default `$`. |
-| `rates` | Unit prices keyed by `"<provider>/<model>"`, then `"<model>"`. The route key wins. |
-| `fallback` | Unit prices for every route no key matches. Omit it to price nothing by default. |
+| `defaults` | Use the shipped table. Default `true`; `false` prices only what `rates` and `fallback` name. |
+| `rates` | Unit prices keyed by `"<provider>/<model>"`, then `"<model>"`. Your key wins over the shipped table. |
+| `fallback` | Unit prices for every route no key matches. Omit it to leave unmatched routes unpriced. |
+
+The shipped keys carry the provider names `opencode-go`, `opencode`, and
+`command-code`. A profile that names the same provider something else gets no
+default for it and needs its own `rates` entries.
+
+### What the shipped table does not promise
+
+One rate per route can only carry one number, so the table holds the **off-peak**
+price each provider publishes:
+
+- DeepSeek's list price and Command Code's V4.1 Flash and V4 Flash are exactly
+  double at peak, which runs 01:00-04:00 and 06:00-10:00 UTC, Monday through
+  Friday. Command Code bills V4 Flash Fast flat, and doubles everything on V4.1
+  Flash Fast except the cache read.
+- No provider here bills a cache write, so `cacheWrite` is `0`, except on
+  OpenCode Zen where the published price has one.
+- Command Code's GOAT plan is not a per-token invoice: the $10/month plan grants
+  **$60** of DeepSeek V4.1 Flash credits a month, and V4.1 Flash Fast draws on
+  the same allowance, so the pill reads as credits burned rather than an amount
+  owed. OpenCode Go's $10/month plan likewise meters its rates against the
+  plan's limits.
+- Ten OpenCode Go ids and two OpenCode Zen ids that the endpoints serve have no
+  published price anywhere upstream. The table leaves them out on purpose
+  rather than guess.
 
 A route with no matching rate is not guessed at: its tokens are counted as
 **unpriced**, contribute nothing to the total, and make the pill mark its amount
@@ -126,7 +103,7 @@ that left no surface message) contributes the provider usage embedded in its
 stream. A re-reported sample for the same turn and step replaces the earlier
 one; `llm/retry-started` closes that slot so a retried attempt adds instead.
 Input, output, cache-read, and cache-write tokens are then priced by the route's
-rates.
+rates, with the shipped table folded under the row's own `rates`.
 
 The client half registers one entry on the `conversation.composer.dock` slot
 and renders it into the shipped stats row (`[data-composer-stats]`) with a React
@@ -143,8 +120,8 @@ shell seeds, not its CSS modules.
 ## Caveats
 
 - **Not a billing record.** The figures are the harness's own token accounting
-  times the rates you configured. The provider's invoice is the authority; a
-  wrong rate in `rates` is a wrong pill.
+  times the rates in play. The provider's invoice is the authority; a wrong rate
+  is a wrong pill.
 - **One rate per route.** A provider that changes its price mid-session, or a
   route whose price depends on the request size, needs a rate that reflects what
   you actually pay.
@@ -157,7 +134,15 @@ bun install
 bun run build     # lib/index.js (host half) and lib/client.js (browser half)
 bun test          # pricing fold, formatting, and the built bundle
 bun run check     # type check
+bun run lint      # biome
 ```
+
+`src/rates.generated.ts` is the price list the plugin ships, and
+`bun run rates:update` rebuilds it. The generator reads
+[models.dev](https://models.dev/api.json) plus each provider's `/models`
+endpoint for OpenCode, and each Command Code model page for Command Code. Ids
+upstream does not price are skipped and named on stderr, so refreshing the table
+is one command and a commit.
 
 `lib/` is generated and ignored by git. `build.ts` bundles the host half as ESM
 (with `zod` and `@deepseek-ai/schemastery` left external) and the browser half

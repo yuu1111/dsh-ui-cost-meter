@@ -4,79 +4,25 @@
 # projection (whole-log spend folded from durable provider usage) and the
 # browser half adds one pill to the composer's stats dock.
 #
-# Configuration (row `config`):
+# The plugin ships per-route unit prices for OpenCode Go, OpenCode Zen, and
+# Command Code, so this row needs no `rates` at all. Configuration:
 #   symbol:   display symbol prefixed to every amount. Default '$'.
-#   rates:    per-1M-token unit prices, keyed by "<provider>/<model>" or by
-#             "<model>". The route key wins over the bare model, which wins
-#             over `fallback`. Tokens whose route matches nothing are counted
-#             as unpriced and the pill marks its total with a trailing '+'.
-#   fallback: unit prices for every route no key matches. Omit it to price
-#             nothing by default, which keeps a wrong rate from looking right.
+#   defaults: use the shipped table. Set false to price only what `rates` and
+#             `fallback` name.
+#   rates:    per-1M-token unit prices that override the shipped table, keyed
+#             by "<provider>/<model>" or by "<model>". The route key wins over
+#             the bare model, which wins over `fallback`.
+#   fallback: unit prices for every route no key matches. Omit it to leave
+#             unmatched routes unpriced, which keeps a wrong rate from looking
+#             right.
 #
-# The values below are each provider's own published numbers in USD per 1M
-# tokens. DeepSeek's official API and OpenCode Go charge DeepSeek's list
-# price, which is half off-peak. Command Code prices every model on its own
-# page, so its rows carry Command Code's numbers instead: V4.1 Flash and
-# V4 Flash are half off-peak too, V4 Flash Fast is billed flat, and V4.1
-# Flash Fast's cache read is the one field its peak does not double.
-# Peak runs 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday, so it
-# is never charged at the weekend.
-# DeepSeek and OpenCode Go checked 2026-09-14 against:
-#   https://api-docs.deepseek.com/quick_start/pricing
-#   https://opencode.ai/docs/go/
-# Command Code checked 2026-09-29 against:
-#   https://commandcode.ai/models/deepseek-v4-1-flash-fast
-#   https://commandcode.ai/models/deepseek-v4-flash-fast
-#   https://commandcode.ai/models/deepseek-v4-flash
-#   https://commandcode.ai/pricing
-# OpenCode Go's $10/month plan meters these rates against usage limits rather
-# than billing per token. Command Code's $10/month GOAT plan grants $60 of
-# DeepSeek V4.1 Flash credits a month, which V4.1 Flash Fast draws on as
-# well, so those rows read as credits burned instead of a per-token invoice.
-# Replace them with the rates you actually pay.
+# Add a `rates` key for a route the shipped table gets wrong for you: a
+# peak-hour price, a plan that meters its usage rather than billing per token,
+# or a provider the table does not know. DeepSeek's list price and Command
+# Code's V4.1 Flash and V4 Flash are exactly double at peak, which runs
+# 01:00-04:00 and 06:00-10:00 UTC, Monday through Friday.
 - insert:
     - id: cost-meter
       name: dsh-ui-cost-meter
       config:
         symbol: '$'
-        rates:
-          opencode-go/deepseek-flash:
-            input: 0.15
-            output: 0.6
-            cacheRead: 0.003
-            cacheWrite: 0
-          opencode-go/deepseek-v4-pro:
-            input: 0.66
-            output: 1.98
-            cacheRead: 0.022
-            cacheWrite: 0
-          deepseek-official/deepseek-flash:
-            input: 0.15
-            output: 0.6
-            cacheRead: 0.003
-            cacheWrite: 0
-          deepseek-official/deepseek-v4-pro:
-            input: 0.66
-            output: 1.98
-            cacheRead: 0.022
-            cacheWrite: 0
-          command-code/deepseek/deepseek-v4.1-flash:
-            input: 0.15
-            output: 0.6
-            cacheRead: 0.003
-            cacheWrite: 0
-          command-code/deepseek/deepseek-v4-flash:
-            input: 0.15
-            output: 0.6
-            cacheRead: 0.003
-            cacheWrite: 0
-          command-code/deepseek/deepseek-v4.1-flash-fast:
-            input: 0.16
-            output: 0.58
-            cacheRead: 0.02
-            cacheWrite: 0
-          command-code/deepseek/deepseek-v4-flash-fast:
-            input: 0.28
-            output: 0.56
-            cacheRead: 0.07
-            cacheWrite: 0
