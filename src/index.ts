@@ -12,6 +12,7 @@ import type { SessionEvent } from "@deepseek-ai/dsh-session";
 import type { ProjectionDefinition } from "@deepseek-ai/dsh-session-projection";
 import z from "@deepseek-ai/schemastery";
 import { z as zod } from "zod";
+import { DEFAULT_RATES } from "./rates.generated";
 import {
 	addParts,
 	type Buckets,
@@ -66,6 +67,7 @@ export const Config = z.object({
 	symbol: z.string().default("$"),
 	rates: z.dict(RatesSchema).default({}),
 	fallback: FallbackSchema,
+	defaults: z.boolean().default(true),
 });
 
 /**
@@ -73,8 +75,11 @@ export const Config = z.object({
  */
 export type CostConfig = {
 	symbol: string;
+	/** 同梱の既定表のうち差し替える単価 */
 	rates: Record<string, Rates>;
 	fallback?: Rates | undefined;
+	/** 同梱の既定表を使うか */
+	defaults: boolean;
 };
 
 /**
@@ -454,13 +459,20 @@ export function costMeterProjection(
 
 /**
  * `costMeter` 投影を登録する
+ *
+ * 同梱の表と設定のすり合わせはここで済ませる 投影は渡された単価だけを見る
+ * 純粋な関数のままにして 差し替えの影響をこの1か所に閉じ込める
  * @param ctx - 投影レジストリを持つコンテキスト
  * @param config - 行の `config` 検証済みの設定
  */
 export function apply(ctx: Context, config: CostConfig): void {
+	const overrides = config?.rates ?? {};
 	const settings: CostSettings = {
 		symbol: config?.symbol ?? "$",
-		rates: config?.rates ?? {},
+		rates:
+			(config?.defaults ?? true)
+				? { ...DEFAULT_RATES, ...overrides }
+				: overrides,
 		...(config?.fallback === undefined ? {} : { fallback: config.fallback }),
 	};
 	ctx.sessionProjections.register(costMeterProjection(settings));
