@@ -52,6 +52,7 @@
 		"prepack": "bun run build",
 		"check": "tsc -p tsconfig.json",
 		"test": "bun run build && bun test",
+		"rates:update": "bun scripts/update-rates.ts && biome check --write src/rates.generated.ts",
 		"lint": "biome check .",
 		"format": "biome check --write --unsafe ."
 	},

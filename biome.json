@@ -8,6 +8,7 @@
 		"includes": [
 			"src/**",
 			"tests/**",
+			"scripts/**",
 			"*.ts",
 			"*.json"
 		]
