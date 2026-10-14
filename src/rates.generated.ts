@@ -233,6 +233,12 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheRead: 0.15,
 		cacheWrite: 0,
 	},
+	"command-code/google/gemini-4-argon": {
+		input: 2,
+		output: 10,
+		cacheRead: 0.1,
+		cacheWrite: 0,
+	},
 	"command-code/gpt-5.3-codex": {
 		input: 2,
 		output: 8,
@@ -345,6 +351,12 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		input: 0.1,
 		output: 0.2,
 		cacheRead: 0.002,
+		cacheWrite: 0,
+	},
+	"command-code/meta/muse-wonder-1.0": {
+		input: 4,
+		output: 20,
+		cacheRead: 0.2,
 		cacheWrite: 0,
 	},
 	"command-code/mistral/mistral-large-4": {
@@ -539,6 +551,12 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheRead: 0.26,
 		cacheWrite: 0,
 	},
+	"opencode-go/cat-jam-free": {
+		input: 0,
+		output: 0,
+		cacheRead: 0,
+		cacheWrite: 0,
+	},
 	"opencode-go/claude-haiku-5-5": {
 		input: 0.1,
 		output: 0.5,
@@ -575,6 +593,12 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheRead: 0.003,
 		cacheWrite: 0,
 	},
+	"opencode-go/gemini-4-argon-contributor": {
+		input: 4,
+		output: 20,
+		cacheRead: 0.2,
+		cacheWrite: 0,
+	},
 	"opencode-go/glm-5.2": {
 		input: 1.4,
 		output: 4.4,
@@ -604,12 +628,6 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		output: 0.5,
 		cacheRead: 0.01,
 		cacheWrite: 0.125,
-	},
-	"opencode-go/grok-4.5": {
-		input: 2,
-		output: 6,
-		cacheRead: 0.3,
-		cacheWrite: 0,
 	},
 	"opencode-go/grok-4.6": {
 		input: 2,
@@ -756,6 +774,7 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheWrite: 0,
 	},
 	"opencode/big-pickle": { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+	"opencode/cat-jam-free": { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 	"opencode/claude-fable-5": {
 		input: 10,
 		output: 50,
@@ -816,12 +835,6 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheRead: 0.2,
 		cacheWrite: 5,
 	},
-	"opencode/claude-sonnet-4": {
-		input: 3,
-		output: 15,
-		cacheRead: 0.3,
-		cacheWrite: 3.75,
-	},
 	"opencode/claude-sonnet-4-5": {
 		input: 3,
 		output: 15,
@@ -852,12 +865,6 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheRead: 0.028,
 		cacheWrite: 0,
 	},
-	"opencode/deepseek-v4-flash-vision-exp": {
-		input: 0.14,
-		output: 0.28,
-		cacheRead: 0.028,
-		cacheWrite: 0,
-	},
 	"opencode/deepseek-v4-pro": {
 		input: 1.74,
 		output: 3.84,
@@ -870,7 +877,6 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheRead: 0.006,
 		cacheWrite: 0,
 	},
-	"opencode/exo-free": { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
 	"opencode/gemini-3-flash": {
 		input: 0.5,
 		output: 3,
@@ -911,6 +917,12 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		input: 1.5,
 		output: 7.5,
 		cacheRead: 0.15,
+		cacheWrite: 0,
+	},
+	"opencode/gemini-4-argon": {
+		input: 2,
+		output: 10,
+		cacheRead: 0.1,
 		cacheWrite: 0,
 	},
 	"opencode/glm-5": { input: 1, output: 3.2, cacheRead: 0.2, cacheWrite: 0 },
@@ -1105,12 +1117,6 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheWrite: 0,
 	},
 	"opencode/kimi-k3": { input: 3, output: 15, cacheRead: 0.3, cacheWrite: 0 },
-	"opencode/ling-3.0-flash-fin-free": {
-		input: 0,
-		output: 0,
-		cacheRead: 0,
-		cacheWrite: 0,
-	},
 	"opencode/ling-3.1-flash-free": {
 		input: 0,
 		output: 0,
@@ -1172,12 +1178,6 @@ export const DEFAULT_RATES: Readonly<Record<string, Rates>> = {
 		cacheWrite: 0,
 	},
 	"opencode/muse-spark-1.3-contributor-free": {
-		input: 0,
-		output: 0,
-		cacheRead: 0,
-		cacheWrite: 0,
-	},
-	"opencode/nemotron-3-ultra-free": {
 		input: 0,
 		output: 0,
 		cacheRead: 0,

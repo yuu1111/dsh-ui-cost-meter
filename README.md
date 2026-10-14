@@ -37,9 +37,9 @@ OpenCode Go, OpenCode Zen, and Command Code served when it was generated:
 
 | Provider | Routes | Where the numbers come from |
 |---|---|---|
-| `opencode-go` | 36 | [models.dev](https://models.dev/api.json), kept only for the ids `https://opencode.ai/zen/go/v1/models` actually serves |
-| `opencode` | 85 | the same, against `https://opencode.ai/zen/v1/models` |
-| `command-code` | 87 | `https://api.commandcode.ai/provider/v1/models` for the ids, each model's page under `https://commandcode.ai/models/` for Input, Output, and Cache read |
+| `opencode-go` | 37 | [models.dev](https://models.dev/api.json), kept only for the ids `https://opencode.ai/zen/go/v1/models` actually serves |
+| `opencode` | 82 | the same, against `https://opencode.ai/zen/v1/models` |
+| `command-code` | 89 | `https://api.commandcode.ai/provider/v1/models` for the ids, each model's page under `https://commandcode.ai/models/` for Input, Output, and Cache read |
 
 Write `rates` only for the routes where the shipped number is wrong for you —
 a peak-hour price, a different plan, a provider the table has never heard of.

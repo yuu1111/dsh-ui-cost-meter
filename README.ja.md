@@ -33,9 +33,9 @@ Command Code のモデルを生成時点のぶんだけ持っています
 
 | provider | route 数 | 数字の出どころ |
 |---|---|---|
-| `opencode-go` | 36 | [models.dev](https://models.dev/api.json) の単価を `https://opencode.ai/zen/go/v1/models` が実際に配る id だけに絞ったもの |
-| `opencode` | 85 | 同じく `https://opencode.ai/zen/v1/models` に対して |
-| `command-code` | 87 | id は `https://api.commandcode.ai/provider/v1/models` 各モデルの単価は `https://commandcode.ai/models/` の下のページの Input・Output・Cache read |
+| `opencode-go` | 37 | [models.dev](https://models.dev/api.json) の単価を `https://opencode.ai/zen/go/v1/models` が実際に配る id だけに絞ったもの |
+| `opencode` | 82 | 同じく `https://opencode.ai/zen/v1/models` に対して |
+| `command-code` | 89 | id は `https://api.commandcode.ai/provider/v1/models` 各モデルの単価は `https://commandcode.ai/models/` の下のページの Input・Output・Cache read |
 
 `rates` に書くのは 同梱の数字が自分の支払いと違う route だけでかまいません ピーク時間の
 単価 別のプラン 同梱の表が知らない provider などです 同じ key を書けばその route だけ
