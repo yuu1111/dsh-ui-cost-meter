@@ -17,7 +17,6 @@
 `cordis.patch.yml` はプラグイン行を挿入し、`symbol`/`rates`/`fallback` の設定をコメントで説明する
 `knip.ts` は Knip が推論できないソースの入口を並べ、テストは `tests/**/*.test.ts` に置く
 `README.md` と `README.ja.md` は互いの翻訳で、常に一緒に更新する
-`CLAUDE.md` は `@AGENTS.md` だけを持つため、プロジェクトの指針はこのファイル1つへ集約する
 
 ## Build, Test, and Development Commands
 
