@@ -133,6 +133,7 @@ export const inject = ["slots"];
  *
  * ドック内に置く目印から親をたどり その中に現れる行を描画先にする 行は
  * セッションの切り替えで作り直されるため 出入りを監視して追随する
+ *
  * @returns 目印の ref と 見つかった行 まだ無ければ null
  */
 function useStatsRow(): {
@@ -166,6 +167,7 @@ function useStatsRow(): {
  * 内訳パネルの開閉と位置
  *
  * シェルの統計ピルと同じく引き金の上へ出し 外側への押下と Escape で閉じる
+ *
  * @returns 開閉の状態 引き金とパネルの ref と パネルの位置
  */
 function useCostDialog() {
@@ -203,6 +205,7 @@ function useCostDialog() {
  *
  * 押すと内訳のパネルが開く パネルの骨組みはシェルの統計ピルと同じで 見出しと
  * 罫線の下に 見出しと値の組みを並べる
+ *
  * @param props - 表示する金額
  * @returns 引き金と 開いているときのパネル
  */
@@ -281,6 +284,7 @@ function CostPillBody({ view }: { view: CostMeterView }) {
  * 0.2.1 のシェルは行の目印を持たず 統計ピルをドックの flex 行へ直接並べる
  * ここで幅いっぱいの自前の行で包むと ドックの行が割れて横幅がずれるため
  * 包まずに同じ行の仲間として置く
+ *
  * @param props - ドックが配る標準 props
  * @returns ピル 表示する金額が無ければ何も描かない
  */
@@ -301,6 +305,7 @@ function CostPill({ useProjection }: CostPillProps) {
 
 /**
  * 見た目のスタイルタグを document へ入れる
+ *
  * @returns 取り除く関数
  */
 function installStyle(): () => void {
@@ -319,6 +324,7 @@ function installStyle(): () => void {
 
 /**
  * 統計ドックへピルを登録する
+ *
  * @param ctx - クライアント側 cordis コンテキスト
  */
 export function apply(ctx: Context): void {

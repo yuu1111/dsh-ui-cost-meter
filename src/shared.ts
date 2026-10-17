@@ -68,23 +68,16 @@ export interface CostMeterView {
 	readonly total: number;
 	readonly input: number;
 	readonly output: number;
-	/** キャッシュ読みの金額 */
 	readonly cacheRead: number;
-	/** キャッシュ書きの金額 */
 	readonly cacheWrite: number;
-	/** 値付けしたトークン数 入力側3つと出力の合計 */
 	readonly tokens: number;
-	/** 単価が見つからず金額に入らなかったトークン数 */
 	readonly unpricedTokens: number;
-	/** 直近のリクエストが使った provider route */
 	readonly provider: string | null;
-	/** 直近のリクエストが使った model id */
 	readonly model: string | null;
 }
 
 declare module "@deepseek-ai/dsh-session-projection/types" {
 	interface SessionProjectionMap {
-		/** 耐久ログ全体の累計金額 設定の単価で値付けしたもの */
 		costMeter: CostMeterView;
 	}
 }
@@ -171,6 +164,7 @@ export function bucketsEqual(left: Buckets, right: Buckets): boolean {
 
 /**
  * 課金対象のトークン数を合計する
+ *
  * @param buckets - 合計するバケット
  * @returns 入力側3つと出力の合計
  */
@@ -215,6 +209,7 @@ export function resolveRates(
 
 /**
  * バケットを単価で値付けする
+ *
  * @param buckets - 値付けするトークン数
  * @param rates - 適用する単価 未設定なら undefined
  * @returns 金額の内訳 単価が無ければ undefined
@@ -236,6 +231,7 @@ export function priceBuckets(
 
 /**
  * 単価とトークン数から金額を出す
+ *
  * @param tokens - トークン数
  * @param rate - 100万トークンあたりの単価
  * @returns 金額
@@ -278,6 +274,7 @@ export function subtractParts(left: CostParts, right: CostParts): CostParts {
 
 /**
  * 内訳の合計を出す
+ *
  * @param parts - 合計する内訳
  * @returns 金額の合計
  */
@@ -306,6 +303,7 @@ export function amountDecimals(value: number): number {
 
 /**
  * 金額を表示用の桁へ丸める
+ *
  * @param value - 表示する金額
  * @returns 丸めた数字だけの文字列
  */
@@ -316,6 +314,7 @@ export function formatAmount(value: number): string {
 
 /**
  * トークン数を表示用の短い形へ丸める
+ *
  * @param value - 表示するトークン数
  * @returns 1.2M のような短い文字列
  */
@@ -334,6 +333,7 @@ export function formatTokens(value: number): string {
 
 /**
  * 小数第1位が0なら整数へ詰める
+ *
  * @param value - 詰める数
  * @returns 表示する文字列
  */
