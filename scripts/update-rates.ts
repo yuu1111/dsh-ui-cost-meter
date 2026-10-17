@@ -64,7 +64,9 @@ async function buildTable(): Promise<Map<string, Rates>> {
 	}
 	for (const [alias, target] of Object.entries(ALIASES)) {
 		const rates = table.get(target);
-		if (rates === undefined) throw new Error(`${target} が表に無い`);
+		if (rates === undefined) {
+			throw new Error(`${target} が表に無い`);
+		}
 		table.set(alias, rates);
 	}
 	return table;
@@ -82,7 +84,9 @@ function byKey(
 	left: readonly [string, Rates],
 	right: readonly [string, Rates],
 ): number {
-	if (left[0] === right[0]) return 0;
+	if (left[0] === right[0]) {
+		return 0;
+	}
 	return left[0] < right[0] ? -1 : 1;
 }
 

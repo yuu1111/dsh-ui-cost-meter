@@ -52,7 +52,9 @@ const message = (turn: number, step: number, usage: Record<string, number>) =>
 function fold(events: readonly unknown[]): CostMeterView {
 	const definition = costMeterProjection(settings);
 	let state: CostMeterState = definition.init({} as never, 0 as never);
-	for (const event of events) state = definition.apply(state, event as never);
+	for (const event of events) {
+		state = definition.apply(state, event as never);
+	}
 	return definition.wire.view(state);
 }
 

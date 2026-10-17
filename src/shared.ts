@@ -53,15 +53,8 @@ export interface CostParts {
  * 行の `config` に書く 単価はすべて100万トークンあたり
  */
 export interface CostSettings {
-	/** 金額の前に付ける記号 */
 	readonly symbol: string;
-	/** `"<provider>/<model>"` か `"<model>"` を key にした単価表 */
 	readonly rates: Readonly<Record<string, Rates>>;
-	/**
-	 * どの key にも一致しない route に使う単価 省略時は値付けしない
-	 *
-	 * 解決済みの設定は key ごと欠けるため 明示的な `undefined` も省略と同じに扱う
-	 */
 	readonly fallback?: Rates | undefined;
 }
 
@@ -71,13 +64,9 @@ export interface CostSettings {
  * すべて耐久ログ全体の集計で ページングや圧縮の影響を受けない
  */
 export interface CostMeterView {
-	/** 金額の前に付ける記号 */
 	readonly symbol: string;
-	/** 金額の合計 */
 	readonly total: number;
-	/** 入力トークンの金額 */
 	readonly input: number;
-	/** 出力トークンの金額 */
 	readonly output: number;
 	/** キャッシュ読みの金額 */
 	readonly cacheRead: number;
@@ -116,8 +105,9 @@ export const ZERO_PARTS: CostParts = {
  * @returns 有限の非負数ならその値 そうでなければ undefined
  */
 function readCount(value: unknown): number | undefined {
-	if (typeof value !== "number" || !Number.isFinite(value) || value < 0)
+	if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
 		return undefined;
+	}
 	return value;
 }
 
@@ -131,7 +121,9 @@ function readCount(value: unknown): number | undefined {
  */
 function readField(value: object, key: string): unknown {
 	for (const [name, field] of Object.entries(value)) {
-		if (name === key) return field;
+		if (name === key) {
+			return field;
+		}
 	}
 	return undefined;
 }
@@ -144,10 +136,14 @@ function readField(value: object, key: string): unknown {
  * @returns 写したバケット 形が違えば undefined
  */
 export function bucketsFromUsage(usage: unknown): Buckets | undefined {
-	if (typeof usage !== "object" || usage === null) return undefined;
+	if (typeof usage !== "object" || usage === null) {
+		return undefined;
+	}
 	const uncachedInput = readCount(readField(usage, "inputTokens"));
 	const output = readCount(readField(usage, "outputTokens"));
-	if (uncachedInput === undefined || output === undefined) return undefined;
+	if (uncachedInput === undefined || output === undefined) {
+		return undefined;
+	}
 	return {
 		uncachedInput,
 		output,
@@ -205,10 +201,14 @@ export function resolveRates(
 	if (model !== null) {
 		if (provider !== null) {
 			const routed = rates[`${provider}/${model}`];
-			if (routed !== undefined) return routed;
+			if (routed !== undefined) {
+				return routed;
+			}
 		}
 		const bare = rates[model];
-		if (bare !== undefined) return bare;
+		if (bare !== undefined) {
+			return bare;
+		}
 	}
 	return settings.fallback;
 }
@@ -223,7 +223,9 @@ export function priceBuckets(
 	buckets: Buckets,
 	rates: Rates | undefined,
 ): CostParts | undefined {
-	if (rates === undefined) return undefined;
+	if (rates === undefined) {
+		return undefined;
+	}
 	return {
 		input: perMillion(buckets.uncachedInput, rates.input),
 		output: perMillion(buckets.output, rates.output),
@@ -293,8 +295,12 @@ export function totalOf(parts: CostParts): number {
  */
 export function amountDecimals(value: number): number {
 	const safe = Number.isFinite(value) && value > 0 ? value : 0;
-	if (safe >= 1) return 2;
-	if (safe >= 0.01) return 3;
+	if (safe >= 1) {
+		return 2;
+	}
+	if (safe >= 0.01) {
+		return 3;
+	}
 	return 4;
 }
 
@@ -314,9 +320,15 @@ export function formatAmount(value: number): string {
  * @returns 1.2M のような短い文字列
  */
 export function formatTokens(value: number): string {
-	if (!Number.isFinite(value) || value <= 0) return "0";
-	if (value >= 1_000_000) return `${trimZero(value / 1_000_000)}M`;
-	if (value >= 1_000) return `${trimZero(value / 1_000)}k`;
+	if (!Number.isFinite(value) || value <= 0) {
+		return "0";
+	}
+	if (value >= 1_000_000) {
+		return `${trimZero(value / 1_000_000)}M`;
+	}
+	if (value >= 1_000) {
+		return `${trimZero(value / 1_000)}k`;
+	}
 	return String(Math.round(value));
 }
 
@@ -334,11 +346,8 @@ function trimZero(value: number): string {
  * 内訳パネルに並べる1行
  */
 export interface BreakdownRow {
-	/** 左に出す見出し */
 	readonly label: string;
-	/** 右に出す値 */
 	readonly value: string;
-	/** route 名のように長く 折り返してよい値かどうか */
 	readonly route?: boolean;
 }
 
@@ -359,17 +368,20 @@ export function breakdownRows(view: CostMeterView): BreakdownRow[] {
 		{ label: "Uncached input", value: money(view.input) },
 		{ label: "Cached input", value: money(view.cacheRead) },
 	];
-	if (view.cacheWrite > 0)
+	if (view.cacheWrite > 0) {
 		rows.push({ label: "Cache write", value: money(view.cacheWrite) });
+	}
 	rows.push({ label: "Output", value: money(view.output) });
-	if (view.unpricedTokens > 0)
+	if (view.unpricedTokens > 0) {
 		rows.push({
 			label: "Unpriced",
 			value: `${formatTokens(view.unpricedTokens)} tok`,
 		});
+	}
 	const route =
 		view.provider === null ? view.model : `${view.provider}/${view.model}`;
-	if (route !== null)
+	if (route !== null) {
 		rows.push({ label: "Provider / model", value: route, route: true });
+	}
 	return rows;
 }

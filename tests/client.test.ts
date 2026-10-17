@@ -55,19 +55,27 @@ function loadBundle(): LoadedBundle {
 	};
 	// シェルが配るモジュールだけを require で見せる
 	const requireForBundle = (specifier: string): unknown => {
-		if (specifier === "react") return React;
-		if (specifier === "react/jsx-runtime") return jsxRuntime;
-		if (specifier === "react-dom") return reactDom;
-		if (specifier === "@deepseek-ai/dsh-client-ui-primitives")
+		if (specifier === "react") {
+			return React;
+		}
+		if (specifier === "react/jsx-runtime") {
+			return jsxRuntime;
+		}
+		if (specifier === "react-dom") {
+			return reactDom;
+		}
+		if (specifier === "@deepseek-ai/dsh-client-ui-primitives") {
 			return {
 				useAnchoredPosition: () => null,
 				useDismissOnOutsidePointer: () => undefined,
 			};
+		}
 		throw new Error(`unexpected require: ${specifier}`);
 	};
 	new Function("window", "require", code)(window, requireForBundle);
-	if (loaded === undefined)
+	if (loaded === undefined) {
 		throw new Error("バンドルがローダーへ登録しなかった");
+	}
 	return loaded;
 }
 
@@ -86,7 +94,9 @@ const styleTags: { id: string; textContent: string; remove: () => void }[] = [];
 			textContent: "",
 			remove: () => {
 				const index = styleTags.indexOf(element);
-				if (index >= 0) styleTags.splice(index, 1);
+				if (index >= 0) {
+					styleTags.splice(index, 1);
+				}
 			},
 		};
 		styleTags.push(element);

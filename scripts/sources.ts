@@ -71,9 +71,13 @@ async function getJson(url: string): Promise<unknown> {
  */
 function idsOf(value: unknown): string[] {
 	const data = (value as { data?: readonly { id?: unknown }[] }).data;
-	if (!Array.isArray(data)) throw new Error("id 一覧の形が違う");
+	if (!Array.isArray(data)) {
+		throw new Error("id 一覧の形が違う");
+	}
 	return data.map((entry) => {
-		if (typeof entry?.id !== "string") throw new Error("id が文字列でない");
+		if (typeof entry?.id !== "string") {
+			throw new Error("id が文字列でない");
+		}
 		return entry.id;
 	});
 }
@@ -110,13 +114,17 @@ function parseModelPage(html: string): Rates | undefined {
 			`aria-label="${label} — Price per 1M[^"]*"[\\s\\S]{0,1200}?tabular-nums">\\$([\\d.,]+)`,
 		);
 		const value = html.match(pattern)?.[1];
-		if (value === undefined) return undefined;
+		if (value === undefined) {
+			return undefined;
+		}
 		const parsed = Number(value.replace(/,/g, ""));
 		return Number.isFinite(parsed) ? parsed : undefined;
 	};
 	const input = tile("Input");
 	const output = tile("Output");
-	if (input === undefined || output === undefined) return undefined;
+	if (input === undefined || output === undefined) {
+		return undefined;
+	}
 	return {
 		input,
 		output,
@@ -141,7 +149,9 @@ function serveId(
 	pageId: string,
 ): string | undefined {
 	const exact = canonical.get(pageId.toLowerCase());
-	if (exact !== undefined) return exact;
+	if (exact !== undefined) {
+		return exact;
+	}
 	const prefixed = served.filter((id) =>
 		id.toLowerCase().startsWith(pageId.toLowerCase()),
 	);
@@ -167,7 +177,9 @@ async function mapLimit<T, R>(
 			for (;;) {
 				const index = next;
 				next += 1;
-				if (index >= items.length) return;
+				if (index >= items.length) {
+					return;
+				}
 				results[index] = await run(items[index] as T);
 			}
 		}),
@@ -197,10 +209,11 @@ async function openCodeRates(): Promise<RateEntry[]> {
 			}
 			entries.push({ provider, id, rates: ratesOf(cost) });
 		}
-		if (unpriced.length > 0)
+		if (unpriced.length > 0) {
 			console.warn(
 				`${provider}: 単価を公表していない id を飛ばした: ${unpriced.join(", ")}`,
 			);
+		}
 	}
 	return entries;
 }
@@ -234,7 +247,9 @@ async function commandCodeRates(): Promise<RateEntry[]> {
 	const entries = new Map<string, RateEntry>();
 	const unknown: string[] = [];
 	for (const page of pages) {
-		if (page === undefined) continue;
+		if (page === undefined) {
+			continue;
+		}
 		const id = serveId(served, canonical, page.id);
 		if (id === undefined) {
 			unknown.push(page.id);
@@ -243,14 +258,16 @@ async function commandCodeRates(): Promise<RateEntry[]> {
 		entries.set(id, { provider: COMMAND_CODE_PROVIDER, id, rates: page.rates });
 	}
 	const missing = served.filter((id) => !entries.has(id));
-	if (missing.length > 0)
+	if (missing.length > 0) {
 		console.warn(
 			`${COMMAND_CODE_PROVIDER}: 単価を公表していない id を飛ばした: ${missing.join(", ")}`,
 		);
-	if (unknown.length > 0)
+	}
+	if (unknown.length > 0) {
 		console.warn(
 			`${COMMAND_CODE_PROVIDER}: API が配らない id を飛ばした: ${unknown.join(", ")}`,
 		);
+	}
 	return [...entries.values()];
 }
 

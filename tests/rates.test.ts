@@ -63,7 +63,9 @@ function fold(config: CostConfig, events: readonly unknown[]): CostMeterView {
 	);
 	const registered = definition as Definition;
 	let state = registered.init({} as never, 0 as never);
-	for (const event of events) state = registered.apply(state, event as never);
+	for (const event of events) {
+		state = registered.apply(state, event as never);
+	}
 	return registered.wire.view(state);
 }
 

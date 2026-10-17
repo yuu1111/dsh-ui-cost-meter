@@ -11,9 +11,6 @@
 import { readFile, rm, writeFile } from "node:fs/promises";
 
 /**
- * 配信側がモジュール名として使う値 パッケージ名と一致させる
- */
-/**
  * 配信側がモジュール名として使う値
  *
  * client modules は最も近い package.json の name をモジュール名にするため
@@ -72,6 +69,7 @@ const EXPORTS = ["apply", "inject"];
 
 /**
  * 失敗したビルドのログを出して中断する
+ *
  * @param label - どちらのビルドか
  * @param result - Bun.build の結果
  */
@@ -79,8 +77,12 @@ function assertBuilt(
 	label: string,
 	result: { success: boolean; logs: readonly unknown[] },
 ): void {
-	if (result.success) return;
-	for (const log of result.logs) console.error(log);
+	if (result.success) {
+		return;
+	}
+	for (const log of result.logs) {
+		console.error(log);
+	}
 	throw new Error(`${label} のビルドに失敗した`);
 }
 
@@ -122,7 +124,6 @@ assertBuilt(
 		outdir: OUT_DIR,
 		target: "node",
 		format: "esm",
-		// 実行時の依存は本体の node_modules から解かせる 二重に抱え込ませない
 		external: HOST_EXTERNALS,
 	}),
 );
@@ -135,7 +136,6 @@ assertBuilt(
 		target: "browser",
 		format: "cjs",
 		external: CLIENT_EXTERNALS,
-		// 開発用の jsx ランタイムは shell が持たないため本番用の import に固定する
 		jsx: { development: false },
 	}),
 );

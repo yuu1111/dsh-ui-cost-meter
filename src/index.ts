@@ -199,10 +199,15 @@ const stateSchema: zod.ZodType<CostMeterState> = zod.strictObject({
  * @returns 報告された usage 無ければ undefined
  */
 function usageOf(event: SessionEvent): unknown {
-	if (event.type === "assistant/message" && event.data.usage !== undefined)
+	if (event.type === "assistant/message" && event.data.usage !== undefined) {
 		return event.data.usage;
-	if (event.type !== "assistant/message" && event.type !== "assistant/attempt")
+	}
+	if (
+		event.type !== "assistant/message" &&
+		event.type !== "assistant/attempt"
+	) {
 		return undefined;
+	}
 	return lastStreamUsage(event.data.stream);
 }
 
@@ -212,13 +217,16 @@ function usageOf(event: SessionEvent): unknown {
  * @returns 最後の usage チャンクが持つ usage 無ければ undefined
  */
 function lastStreamUsage(stream: unknown): unknown {
-	if (!Array.isArray(stream)) return undefined;
+	if (!Array.isArray(stream)) {
+		return undefined;
+	}
 	for (let index = stream.length - 1; index >= 0; index -= 1) {
 		const record = stream[index] as
 			| { type?: unknown; chunk?: { type?: unknown; usage?: unknown } }
 			| undefined;
-		if (record?.type === "chunk" && record.chunk?.type === "usage")
+		if (record?.type === "chunk" && record.chunk?.type === "usage") {
 			return record.chunk.usage;
+		}
 	}
 	return undefined;
 }
@@ -309,8 +317,9 @@ function withRoute(
 	if (
 		state.route?.provider === config.provider &&
 		state.route.model === config.model
-	)
+	) {
 		return state;
+	}
 	const route: Route = { provider: config.provider, model: config.model };
 	return {
 		...state,
@@ -360,12 +369,20 @@ function readSample(
 	event: SessionEvent,
 	settings: CostSettings,
 ): { previous: Sample | null; sample: Sample } | null {
-	if (event.type !== "assistant/message" && event.type !== "assistant/attempt")
+	if (
+		event.type !== "assistant/message" &&
+		event.type !== "assistant/attempt"
+	) {
 		return null;
+	}
 	const usage = usageOf(event);
-	if (usage === undefined) return null;
+	if (usage === undefined) {
+		return null;
+	}
 	const buckets = bucketsFromUsage(usage);
-	if (buckets === undefined) return null;
+	if (buckets === undefined) {
+		return null;
+	}
 	const turn = event.data.turn;
 	const step = event.data.step;
 	const previous =
@@ -434,7 +451,9 @@ export function costMeterProjection(
 				return withoutRetriedSample(state, event.data.turn, event.data.step);
 			}
 			const read = readSample(state, event, settings);
-			if (read === null) return state;
+			if (read === null) {
+				return state;
+			}
 			// 同じ試行の再報告は集計を動かさない
 			if (
 				read.previous !== null &&
