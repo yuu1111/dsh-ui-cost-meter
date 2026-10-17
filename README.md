@@ -108,9 +108,8 @@ rates, with the shipped table folded under the row's own `rates`.
 The client half registers one entry on the `conversation.composer.dock` slot
 and renders it into the shipped stats row (`[data-composer-stats]`) with a React
 portal, so the cost pill shares that row's font, spacing, and vertical rhythm
-instead of starting a row of its own. Without a stats row to join (a session
-that has produced no steps or tokens yet) it falls back to drawing its own
-centered row.
+instead of starting a row of its own. Shells without that marker (DSH 0.2.1
+and later) get the pill placed straight into the dock's own row, unwrapped.
 
 The pill and its panel carry the shell's own declarations — the same `--dsw-*`
 tokens, sizes, radius, and two-column row grid as the shipped pills and their

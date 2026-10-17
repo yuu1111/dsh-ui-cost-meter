@@ -6,7 +6,7 @@
 投影は耐久ログを畳んでセッション全体の金額を出し、その値付けにはプラグイン行へ設定した100万トークンあたりの単価を使う
 `src/client.tsx` はブラウザ側の本体で、`slots` を待ち、1つの style タグを document へ保ち、`conversation.composer.dock` へピルを1つ（id `cost`、`order: 10`）登録してシェルの統計ピルの後ろへ並べる
 ピルは React ポータルでシェルの統計ピルの行（`[data-composer-stats]`）へ描画し、その行の字と間隔をそのまま使う
-行がまだ現れていなければ中央寄せの自前の行を描く
+行が無ければ（DSH 0.2.1 以降のシェルは行の目印を持たない）包まずにドックの行へそのまま並べる
 `src/shared.ts` は両側が合意する定義を置く
 投影キー、`Rates`/`Buckets`/`CostParts`/`CostSettings`/`CostMeterView` の型、ゼロ値の定数が入る
 値付けと整形の関数（`bucketsFromUsage`、`resolveRates`、`priceBuckets`、`addParts`、`subtractParts`、`formatAmount`、`formatTokens`、`breakdownText`）も入る

@@ -83,17 +83,16 @@ const MEASURE_STYLE: CSSProperties = {
  * ピルとパネルの見た目
  *
  * シェルの統計ピルと内訳ダイアログの CSS Modules は外から読めないため 同じ
- * トークンと同じ宣言を自前の class で持つ 統計ピルの行が無いときだけ 行の
- * 組み方も同じ値で自前に行を描く
+ * トークンと同じ宣言を自前の class で持つ ピルの字と高さは 0.2.1 のシェルの
+ * 統計ピルと同じ値にする
  *
  * `--dsw-specific-menu` は不透明ではなく `#303136f0` のような薄い面なので
  * `--dsw-menu-backdrop-filter` と必ず組で使う これが無いと背後がぼけず
  * 透けた本文がそのまま読めてしまう 角丸も組み込みの面と同じ `--dsw-radius-lg` を使う
  */
 const STYLE = `
-.dsh-ui-cost-meter{max-width:var(--dsh-chat-content-width);box-sizing:border-box;width:100%;padding:4px calc(var(--dsh-composer-side-clearance) + 16px) 0px;font-size:var(--dsh-content-font-size-secondary,13px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));justify-content:center;gap:12px;margin:0 auto;display:flex}
-.dsh-ui-cost-meter-anchor{min-width:0;display:inline-flex}
-.dsh-ui-cost-meter-pill{box-sizing:border-box;max-width:100%;color:var(--dsw-alias-label-tertiary);font:inherit;font-variant-numeric:tabular-nums;line-height:inherit;white-space:nowrap;background:0 0;border:none;border-radius:24px;align-items:center;gap:6px;padding:1px 8px;display:inline-flex}
+.dsh-ui-cost-meter-anchor{min-width:0;font-size:calc(var(--dsh-content-font-size-secondary,13px) - 1px);line-height:calc(20px + var(--dsh-content-font-delta-secondary,0px));display:inline-flex}
+.dsh-ui-cost-meter-pill{box-sizing:border-box;max-width:100%;color:var(--dsw-alias-label-tertiary);font:inherit;font-variant-numeric:tabular-nums;line-height:inherit;white-space:nowrap;background:0 0;border:none;border-radius:var(--dsw-radius-sm);align-items:center;gap:6px;padding:1px 8px;display:inline-flex}
 .dsh-ui-cost-meter-symbol{flex:none;width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600}
 button.dsh-ui-cost-meter-pill{cursor:pointer}
 button.dsh-ui-cost-meter-pill:hover,button.dsh-ui-cost-meter-pill[aria-expanded=true]{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}
@@ -144,7 +143,9 @@ function useStatsRow(): {
 	const [row, setRow] = useState<HTMLElement | null>(null);
 	useEffect(() => {
 		const container = anchorRef.current?.parentElement;
-		if (container === undefined || container === null) return;
+		if (container === undefined || container === null) {
+			return;
+		}
 		const sync = () => {
 			setRow((current) => {
 				const next = container.querySelector<HTMLElement>(STATS_ROW_SELECTOR);
@@ -181,9 +182,13 @@ function useCostDialog() {
 	});
 	useDismissOnOutsidePointer(rootRef, open, setOpen, panelRef);
 	useEffect(() => {
-		if (!open) return;
+		if (!open) {
+			return;
+		}
 		const onKeyDown = (event: KeyboardEvent) => {
-			if (event.key === "Escape") setOpen(false);
+			if (event.key === "Escape") {
+				setOpen(false);
+			}
 		};
 		document.addEventListener("keydown", onKeyDown);
 		return () => {
@@ -271,7 +276,11 @@ function CostPillBody({ view }: { view: CostMeterView }) {
 /**
  * 今のセッションの累計金額を出すピル
  *
- * 統計ピルの行があればその中へ並べ 無ければ自前の行として描く
+ * 統計ピルの行があればその中へ並べ 無ければドックへそのまま並べる
+ *
+ * 0.2.1 のシェルは行の目印を持たず 統計ピルをドックの flex 行へ直接並べる
+ * ここで幅いっぱいの自前の行で包むと ドックの行が割れて横幅がずれるため
+ * 包まずに同じ行の仲間として置く
  * @param props - ドックが配る標準 props
  * @returns ピル 表示する金額が無ければ何も描かない
  */
@@ -285,12 +294,7 @@ function CostPill({ useProjection }: CostPillProps) {
 	return (
 		<>
 			<span ref={anchorRef} hidden />
-			{body !== null &&
-				(row === null ? (
-					<div className="dsh-ui-cost-meter">{body}</div>
-				) : (
-					createPortal(body, row)
-				))}
+			{body !== null && (row === null ? body : createPortal(body, row))}
 		</>
 	);
 }
@@ -301,7 +305,9 @@ function CostPill({ useProjection }: CostPillProps) {
  */
 function installStyle(): () => void {
 	const existing = document.getElementById(STYLE_TAG_ID);
-	if (existing !== null) return () => undefined;
+	if (existing !== null) {
+		return () => undefined;
+	}
 	const style = document.createElement("style");
 	style.id = STYLE_TAG_ID;
 	style.textContent = STYLE;
@@ -317,13 +323,11 @@ function installStyle(): () => void {
  */
 export function apply(ctx: Context): void {
 	ctx.effect(installStyle, "cost-meter: pill style");
-	// ドックが生まれるたびに登録し ドックが畳まれると一緒に消える
 	ctx.slots.inject(DOCK, () =>
 		ctx.slots.register(
 			{
 				name: DOCK,
 				id: PILL_ID,
-				// 統計ピル(order 0)の後ろへ並べる
 				order: 10,
 			},
 			CostPill,
